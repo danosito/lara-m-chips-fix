@@ -8,9 +8,6 @@ on:
 permissions:
   contents: write
 
-env:
-  LARA_VERSION: 1.2-ci.${{ github.run_number }}
-
 jobs:
   build:
     runs-on: macos-14
@@ -33,7 +30,6 @@ jobs:
             -scheme lara \
             -configuration Debug \
             -sdk iphoneos \
-            MARKETING_VERSION=$LARA_VERSION \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
@@ -49,6 +45,12 @@ jobs:
           mkdir -p "$PWD/build/Payload"
           cp -R "$APP_PATH" "$PWD/build/Payload/"
           (cd "$PWD/build" && /usr/bin/zip -qry lara.ipa Payload)
+
+      - name: create release tag
+        id: tag
+        run: |
+          TAG="build_$(date +'%Y%m%d%H%M%S')-$(git rev-parse --short HEAD)"
+          echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: get last 12h commits
         id: commits
@@ -72,19 +74,20 @@ jobs:
               repo: context.repo.repo
             });
 
-            for (const release of releases.data) {
+            const latestRelease = releases.data.find(r => r.tag_name === 'latest');
+            if (latestRelease) {
               await github.rest.repos.deleteRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                release_id: release.id
+                release_id: latestRelease.id
               });
             }
 
       - name: create new release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ env.LARA_VERSION }}
-          name: Lara v${{ env.LARA_VERSION }}
+          tag_name: latest
+          name: Latest Build
           body: ${{ env.COMMITS }}
           files: build/lara.ipa
         env:
