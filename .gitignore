@@ -1,5 +1,4 @@
 Resources/*
-!Resources/build.sh
 xcuserdata/
 *.xcuserstate
 .DS_Store
