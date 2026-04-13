@@ -105,9 +105,9 @@ struct FontPicker: View {
                         showimporter = true
                     }
                 } header: {
-                    Text("Custom Fonts")
+                    Text("Settings")
                 } footer: {
-                    Text("Some custom fonts will not work for app icons and other stuff, some will not work at all. If you want them to work, patch the normal SFUI.ttf to use your fonts glyph symbols and use that as your custom font.")
+                    Text("Some custom fonts will not work for app icons and other stuff, some will not work at all. If you want them to work, patch your .ttf [here](https://neonmodder123.github.io/lara-font-patcher/).")
                 }
                 
                 Section {
