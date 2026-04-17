@@ -121,7 +121,7 @@ set -e
 if [[ $XCODEBUILD_STATUS -ne 0 ]]; then
   echo "ERROR: xcodebuild failed (exit $XCODEBUILD_STATUS). Log: $XCODEBUILD_LOG" >&2
   echo "--- Last 200 lines ---" >&2
-  tail -n 200 "$XCODEBUILD_LOG" >&2 || true
+  cat "$XCODEBUILD_LOG" >&2 || true
   exit "$XCODEBUILD_STATUS"
 fi
 
